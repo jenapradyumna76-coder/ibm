@@ -1,7 +1,24 @@
 import os
 from fpdf import FPDF
 import streamlit as st
-st.write("Hello World! The app is alive.")
+import tensorflow as tf
+
+# 1. WRAP THE MODEL LOADING
+@st.cache_resource
+def load_forensic_model():
+    # Using Xception as we discussed
+    model = tf.keras.applications.xception.Xception(weights="imagenet")
+    return model
+
+st.title("Deepfake Forensic Analyzer")
+
+# 2. CALL THE CACHED FUNCTION
+with st.spinner("Initializing AI Forensic Engine..."):
+    model = load_forensic_model()
+
+st.success("AI Engine Ready!")
+
+# Your Grad-CAM and Metadata functions follow...
 # Assuming your previous scripts are saved as metadata_utils.py and forensic_ai.py
 # from metadata_utils import analyze_metadata
 # from forensic_ai import run_forensic_analysis
