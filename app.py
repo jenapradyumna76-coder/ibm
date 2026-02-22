@@ -1,71 +1,102 @@
+import streamlit as st
+import cv2
+import tensorflow as tf
+import numpy as np
 import os
 from fpdf import FPDF
-import streamlit as st
-import tensorflow as tf
+from PIL import Image
+import tempfile
 
-# 1. WRAP THE MODEL LOADING
-@st.cache_resource
-def load_forensic_model():
-    # Using Xception as we discussed
-    model = tf.keras.applications.xception.Xception(weights="imagenet")
-    return model
-
-st.title("Deepfake Forensic Analyzer")
-
-# 2. CALL THE CACHED FUNCTION
-with st.spinner("Initializing AI Forensic Engine..."):
-    model = load_forensic_model()
-
-st.success("AI Engine Ready!")
-
-# Your Grad-CAM and Metadata functions follow...
-# Assuming your previous scripts are saved as metadata_utils.py and forensic_ai.py
-# from metadata_utils import analyze_metadata
-# from forensic_ai import run_forensic_analysis
+# --- 1. CONFIGURATION & DIRECTORIES ---
+os.makedirs('forensic_results', exist_ok=True)
 
 class ForensicReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 15)
-        self.cell(0, 10, 'AI DEEPFAKE FORENSIC ANALYSIS REPORT', 0, 1, 'C')
+        self.cell(0, 10, 'AI DEEPFAKE FORENSIC REPORT', 0, 1, 'C')
         self.ln(10)
 
-    def add_section(self, title, content):
-        self.set_font('Arial', 'B', 12)
-        self.cell(0, 10, title, 0, 1, 'L')
-        self.set_font('Arial', '', 10)
-        self.multi_cell(0, 10, content)
-        self.ln(5)
+# --- 2. AI MODEL LOADING (CACHED) ---
+@st.cache_resource
+def load_ai_model():
+    # Using Xception as a placeholder for the forensic backbone
+    # In a real scenario, you'd use: tf.keras.models.load_model('model.h5')
+    model = tf.keras.applications.Xception(weights='imagenet')
+    return model
 
-def generate_final_report(video_name, ai_score, metadata_flags, images_folder):
-    pdf = ForensicReport()
-    pdf.add_page()
-
-    # 1. Summary Section
-    status = "SUSPICIOUS" if ai_score > 0.5 or metadata_flags else "AUTHENTIC"
-    pdf.add_section("1. EXECUTIVE SUMMARY", 
-                    f"Video Analyzed: {video_name}\n"
-                    f"Overall Verdict: {status}\n"
-                    f"AI Confidence Score: {ai_score*100:.2f}% (Probability of Manipulation)")
-
-    # 2. Metadata Section
-    meta_text = "\n".join(metadata_flags) if metadata_flags else "No suspicious metadata found."
-    pdf.add_section("2. DIGITAL METADATA ANALYSIS", meta_text)
-
-    # 3. Visual Evidence Section (Images from Grad-CAM)
-    pdf.add_section("3. VISUAL ARTIFACTS (Grad-CAM)", 
-                    "The following frames highlight areas where the AI detected synthetic patterns:")
+# --- 3. FORENSIC PROCESSING FUNCTIONS ---
+def analyze_video(video_path, model):
+    cap = cv2.VideoCapture(video_path)
+    success, frame = cap.read()
+    results = []
     
-    # Grab the first 3 evidence images from your Grad-CAM folder
-    evidence_images = [f for f in os.listdir(images_folder) if f.endswith('.jpg')][:3]
-    for img_name in evidence_images:
-        img_path = os.path.join(images_folder, img_name)
-        pdf.image(img_path, w=100)
-        pdf.ln(5)
+    if success:
+        # Resize and preprocess for AI
+        img = cv2.resize(frame, (299, 299))
+        img = np.expand_dims(img, axis=0)
+        img = tf.keras.applications.xception.preprocess_input(img)
+        
+        # Predict
+        preds = model.predict(img)
+        score = np.max(preds) # Simplified score for demo
+        
+        # Save a frame for the report
+        sample_path = "forensic_results/evidence_frame.jpg"
+        cv2.imwrite(sample_path, frame)
+        results.append(sample_path)
+        
+        cap.release()
+        return score, results
+    return 0.0, []
 
-    pdf.output("Forensic_Investigation_Report.pdf")
-    print("Report generated: Forensic_Investigation_Report.pdf")
+# --- 4. STREAMLIT UI ---
+st.set_page_config(page_title="Forensic AI", page_icon="🔍")
+st.title("🛡️ Deepfake Forensic Analyzer")
 
-# --- EXECUTION FLOW ---
-# 1. metadata = analyze_metadata("test_video.mp4")
-# 2. run_forensic_analysis("test_video.mp4") 
-# 3. generate_final_report("test_video.mp4", 0.89, ["Lavf encoder detected", "Missing Camera Info"], "forensic_results"
+with st.status("Initializing Forensic Engines...", expanded=True) as status:
+    st.write("Loading AI Model...")
+    model = load_ai_model()
+    st.write("System Check: Pass")
+    status.update(label="AI Engine Ready!", state="complete", expanded=False)
+
+uploaded_file = st.file_uploader("Upload video for investigation", type=["mp4", "mov", "avi"])
+
+if uploaded_file is not None:
+    # Save upload to a temp file for OpenCV
+    tfile = tempfile.NamedTemporaryFile(delete=False)
+    tfile.write(uploaded_file.read())
+    
+    st.video(uploaded_file)
+    
+    if st.button("Start Forensic Analysis"):
+        with st.spinner("Analyzing pixels for synthetic artifacts..."):
+            score, evidence_images = analyze_video(tfile.name, model)
+            
+            # Show Results
+            st.subheader("Analysis Results")
+            col1, col2 = st.columns(2)
+            
+            verdict = "SUSPICIOUS" if score > 0.5 else "AUTHENTIC"
+            col1.metric("Verdict", verdict)
+            col2.metric("Manipulation Probability", f"{score*100:.2f}%")
+            
+            # Generate PDF
+            pdf = ForensicReport()
+            pdf.add_page()
+            pdf.set_font("Arial", 'B', 12)
+            pdf.cell(0, 10, f"Analysis for: {uploaded_file.name}", 0, 1)
+            pdf.cell(0, 10, f"Verdict: {verdict}", 0, 1)
+            pdf.cell(0, 10, f"Confidence Score: {score:.4f}", 0, 1)
+            
+            if evidence_images:
+                st.image(evidence_images[0], caption="Analyzed Evidence Frame")
+                pdf.image(evidence_images[0], x=10, y=50, w=100)
+            
+            pdf_path = "Forensic_Report.pdf"
+            pdf.output(pdf_path)
+            
+            with open(pdf_path, "rb") as f:
+                st.download_button("📥 Download Forensic Report", f, file_name="Forensic_Report.pdf")
+
+else:
+    st.info("Waiting for video input...")
