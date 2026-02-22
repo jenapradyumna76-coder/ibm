@@ -1,5 +1,7 @@
 import os
 from fpdf import FPDF
+import streamlit as st
+st.write("Hello World! The app is alive.")
 # Assuming your previous scripts are saved as metadata_utils.py and forensic_ai.py
 # from metadata_utils import analyze_metadata
 # from forensic_ai import run_forensic_analysis
