@@ -71,7 +71,7 @@ with st.sidebar:
     st.success("AI Core Loaded")
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
-investigator = st.text_input("Investigator Name", "Field Officer 01")
+investigator = st.text_input("Investigator Name",)
 notes = st.text_area("Detailed Observations")
 
 if uploaded_file:
