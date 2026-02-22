@@ -63,7 +63,7 @@ def analyze_frames(video_path, model):
     return scores
 
 # --- 4. DASHBOARD UI ---
-st.title("🛡️ Ultimate Deepfake Forensic Lab")
+st.title("🛡️ Deepfake Forensic Lab")
 
 with st.sidebar:
     st.info("System: V2.5.0-High-Security")
@@ -72,7 +72,7 @@ with st.sidebar:
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
 investigator = st.text_input("Investigator Name",)
-notes = st.text_area("Detailed Observations")
+notes = st.text_area(" RAW Observations(OPTIONAL)")
 
 if uploaded_file:
     tfile = tempfile.NamedTemporaryFile(delete=False)
