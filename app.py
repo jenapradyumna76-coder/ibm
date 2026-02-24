@@ -163,11 +163,11 @@ if uploaded_file:
         summary = f"Confidence Score: {score*100:.2f} %."
         pdf.multi_cell(0, 7, summary)
 
-        pdf_path = "forensics_results/forensics_Report.pdf"
+        pdf_path = "forensic_results/Forensic_Report.pdf"
         pdf.output(pdf_path)
         
         with open(pdf_path, "rb") as f:
-            st.download_button("📥 Download Official  Certificate", f, file_name="forensics_Report.pdf")
+            st.download_button("📥 Download Official  Certificate", f, file_name="Forensic_Report.pdf")
 
         col1, col2 = st.columns(2)
         with col1:
