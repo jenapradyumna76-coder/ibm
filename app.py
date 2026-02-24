@@ -160,7 +160,7 @@ if uploaded_file:
         
         pdf.set_text_color(0, 0, 0)
         pdf.set_font("Arial", '', 10)
-        summary = f"Confidence Score: {score*100:.2f}%. }"
+        summary = f"Confidence Score: {score*100:.2f} %."
         pdf.multi_cell(0, 7, summary)
 
         pdf_path = "    deepfake_results/deepfake_Report.pdf"
