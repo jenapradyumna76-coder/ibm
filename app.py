@@ -84,7 +84,7 @@ if uploaded_file:
             st.write("Generating SHA-256 Hash...")
             v_hash = get_file_hash(tfile.name)
             
-            )
+            
             st.write("Scanning Temporal Consistency...")
             frame_scores = analyze_frames(tfile.name, model)
             
