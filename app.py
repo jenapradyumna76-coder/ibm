@@ -160,17 +160,17 @@ if uploaded_file:
         
         pdf.set_text_color(0, 0, 0)
         pdf.set_font("Arial", '', 10)
-        summary = f"Confidence Score: {score*100:.2f}%. Notes: {notes if notes else 'None'}"
+        summary = f"Confidence Score: {score*100:.2f}%. }"
         pdf.multi_cell(0, 7, summary)
 
-        pdf_path = "forensic_results/Forensic_Report.pdf"
+        pdf_path = "    deepfake_results/deepfake_Report.pdf"
         pdf.output(pdf_path)
         
         with open(pdf_path, "rb") as f:
-            st.download_button("📥 Download Official Forensic Certificate", f, file_name="Forensic_Report.pdf")
+            st.download_button("📥 Download Official  Certificate", f, file_name="deepfake_Report.pdf")
 
         col1, col2 = st.columns(2)
         with col1:
-            st.image(grad_path, caption="Visual Artifact Localization (HD Heatmap)")
+            st.image(grad_path, caption="VisualHD Heatmap ANALYSIS ")
         with col2:
             st.image(chart_path, caption="Temporal Detection Probability")
