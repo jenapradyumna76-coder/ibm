@@ -10,13 +10,13 @@ import matplotlib.cm as cm
 import hashlib
 import matplotlib.pyplot as plt
 
-# --- 1. SYSTEM INITIALIZATION ---
-st.set_page_config(page_title="Forensic AI Lab", page_icon="🛡️", layout="wide")
+
+st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
 if not os.path.exists("forensic_results"):
     os.makedirs("forensic_results")
 
-# --- 2. FORENSIC UTILITY FUNCTIONS ---
+
 def get_file_hash(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -30,12 +30,12 @@ def analyze_audio_integrity(video_path):
     audio_consistency = 0.9825 
     return has_audio, audio_consistency
 
-# --- 3. PROFESSIONAL PDF REPORT CLASS ---
+
 class UltimateForensicReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 18)
         self.set_text_color(20, 40, 80)
-        self.cell(0, 10, 'DEEPFAKE FORENSIC ANALYSIS CERTIFICATE', 0, 1, 'C')
+        self.cell(0, 10, 'DEEPFAKE  ANALYSIS CERTIFICATE', 0, 1, 'C')
         self.set_font('Arial', 'I', 8)
         self.set_text_color(100)
         self.cell(0, 5, f'Secure ID: {datetime.now().strftime("%Y%m%d%H%M")}', 0, 1, 'C')
@@ -50,7 +50,7 @@ class UltimateForensicReport(FPDF):
         self.cell(0, 8, f" SECTION: {title}", 0, 1, 'L', 1)
         self.ln(3)
 
-# --- 4. AI ANALYSIS CORE ---
+
 @st.cache_resource
 def load_forensic_engine():
     return tf.keras.applications.Xception(weights='imagenet')
@@ -68,30 +68,28 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name):
     return heatmap.numpy()
 
 def apply_heatmap(frame, heatmap):
-    """Refined HD Heatmap with Cubic Interpolation for Sharper Visuals."""
+
     heatmap = np.uint8(255 * heatmap)
     jet = cm.get_cmap("jet")(np.arange(256))[:, :3]
     
-    # Use INTER_CUBIC for high-definition upscaling of the heatmap
+   
     jet_heatmap = cv2.resize(jet[heatmap], (frame.shape[1], frame.shape[0]), interpolation=cv2.INTER_CUBIC)
     jet_heatmap = np.uint8(jet_heatmap * 255)
     
-    # Enhanced blending for sharper contrast against the evidence frame
     superimposed = cv2.addWeighted(jet_heatmap, 0.5, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), 0.5, 0)
     return superimposed
 
-# --- 5. STREAMLIT UI ---
-st.title("🛡️ Ultimate Deepfake Forensic Lab")
+st.title("🛡️  DEEPFAKE VIDEO AI SYSTEM")
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
-investigator = st.text_input("Investigator Name", "Field Officer 01")
-notes = st.text_area("Detailed Observations", placeholder="Enter specific anomalies noticed...")
+investigator = st.text_input("Investigator Name",placeholder= "YOUR NAME")
+
 
 if uploaded_file:
     tfile = tempfile.NamedTemporaryFile(delete=False)
     tfile.write(uploaded_file.read())
     
-    if st.button("🚨 PERFORM FULL FORENSIC SWEEP"):
+    if st.button("🚨 PERFORM FULL ANALYSIS"):
         model = load_forensic_engine()
         
         with st.status("Performing Comprehensive Multi-Modal Scan...", expanded=True) as status:
