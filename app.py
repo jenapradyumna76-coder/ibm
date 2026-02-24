@@ -10,7 +10,7 @@ import matplotlib.cm as cm
 import hashlib
 import matplotlib.pyplot as plt
 
-# --- 1. FORENSIC UTILITIES ---
+
 def get_file_hash(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -18,7 +18,7 @@ def get_file_hash(file_path):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest()
 
-# --- 2. THE ULTIMATE PDF CLASS ---
+
 class UltimateForensicReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 18)
@@ -38,7 +38,7 @@ class UltimateForensicReport(FPDF):
         self.cell(0, 8, f" SECTION: {title}", 0, 1, 'L', 1)
         self.ln(3)
 
-# --- 3. AI ANALYSIS ENGINE ---
+
 @st.cache_resource
 def load_forensic_engine():
     return tf.keras.applications.Xception(weights='imagenet')
@@ -62,8 +62,8 @@ def analyze_frames(video_path, model):
     cap.release()
     return scores
 
-# --- 4. DASHBOARD UI ---
-st.title("🛡️ Deepfake Forensic Lab")
+
+st.title("🛡️ Ultimate Deepfake Forensic Lab")
 
 with st.sidebar:
     st.info("System: V2.5.0-High-Security")
@@ -71,8 +71,8 @@ with st.sidebar:
     st.success("AI Core Loaded")
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
-investigator = st.text_input("Investigator Name",)
-notes = st.text_area(" RAW Observations(OPTIONAL)")
+investigator = st.text_input("Investigator Name", "Field Officer 01")
+notes = st.text_area("Detailed Observations")
 
 if uploaded_file:
     tfile = tempfile.NamedTemporaryFile(delete=False)
@@ -84,7 +84,7 @@ if uploaded_file:
             st.write("Generating SHA-256 Hash...")
             v_hash = get_file_hash(tfile.name)
             
-            # 2. Temporal Analysis (Charts)
+            )
             st.write("Scanning Temporal Consistency...")
             frame_scores = analyze_frames(tfile.name, model)
             
@@ -101,7 +101,6 @@ if uploaded_file:
             
             status.update(label="Investigation Complete!", state="complete")
 
-        # --- GENERATE PDF ---
         pdf = UltimateForensicReport()
         pdf.add_page()
         
@@ -112,11 +111,11 @@ if uploaded_file:
         pdf.cell(0, 6, f"HASH: {v_hash}", 0, 1)
         pdf.cell(0, 6, f"OFFICER: {investigator}", 0, 1)
 
-        # Sec 2: Probability Chart
+    
         pdf.chapter_header("2. TEMPORAL ANOMALY SCAN")
         pdf.image("forensic_results/chart.png", w=160)
         
-        # Sec 3: Final Verdict
+  
         pdf.chapter_header("3. EXECUTIVE DETERMINATION")
         avg_score = sum(frame_scores)/len(frame_scores)
         verdict = "TAMPERED / DEEPFAKE" if avg_score > 0.5 else "AUTHENTIC CONTENT"
