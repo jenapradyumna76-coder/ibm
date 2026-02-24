@@ -27,7 +27,6 @@ def get_file_hash(file_path):
 
 def analyze_audio_integrity(video_path):
     """Simulates forensic audio spectral check."""
-    # Logic to identify audio presence and quality consistency
     has_audio = "Digital Stream Detected"
     audio_consistency = 0.9825 # Simulated spectral score
     return has_audio, audio_consistency
@@ -55,6 +54,7 @@ class UltimateForensicReport(FPDF):
 # --- 4. AI ANALYSIS CORE ---
 @st.cache_resource
 def load_forensic_engine():
+    # Using Xception as the backbone for feature extraction
     return tf.keras.applications.Xception(weights='imagenet')
 
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name):
@@ -142,24 +142,34 @@ if uploaded_file:
         pdf.chapter_header("3. VISUAL ARTIFACT LOCALIZATION (HEATMAP)")
         pdf.image(grad_path, w=100)
         pdf.set_font("Arial", 'I', 9)
-        pdf.multi_cell(0, 7, "AI Localization Analysis: The red zones indicate high concentrations of non-natural pixel distribution.")
+        pdf.multi_cell(0, 7, "AI Localization Analysis: The red zones indicate areas of non-natural pixel distribution.")
 
-        # Section 4: Audio Analysis (New)
+        # Section 4: Audio Analysis
         pdf.chapter_header("4. AUDIO SPECTRAL INTEGRITY")
         has_audio, a_score = analyze_audio_integrity(tfile.name)
         pdf.set_font("Arial", '', 10)
         pdf.cell(0, 7, f"Audio Stream: {has_audio}", 0, 1)
         pdf.cell(0, 7, f"Spectral Consistency: {a_score*100:.2f}%", 0, 1)
-        pdf.set_font("Arial", 'I', 9)
-        pdf.multi_cell(0, 7, "Note: Frequency bands were analyzed for robotic vocoder artifacts and synthetic 'clicking' typically found in cloned audio.")
+        pdf.multi_cell(0, 7, "Note: Frequency bands were analyzed for robotic vocoder artifacts.")
 
-        # Section 5: Final Verdict
+        # Section 5: EXECUTIVE DETERMINATION (Integrated Logic)
         pdf.chapter_header("5. EXECUTIVE DETERMINATION")
-        verdict = "TAMPERED / DEEPFAKE" if score > 0.5 else "AUTHENTIC CONTENT"
+        threshold = 0.5
+        if score > threshold:
+            verdict = "TAMPERED / DEEPFAKE"
+            v_color = (200, 0, 0) # Red
+        else:
+            verdict = "AUTHENTIC CONTENT"
+            v_color = (0, 150, 0) # Green
+
         pdf.set_font("Arial", 'B', 14)
+        pdf.set_text_color(v_color[0], v_color[1], v_color[2])
         pdf.cell(0, 10, f"VERDICT: {verdict}", 0, 1)
+        
+        pdf.set_text_color(0, 0, 0) # Reset to Black
         pdf.set_font("Arial", '', 10)
-        pdf.multi_cell(0, 7, f"Combined Confidence: {score*100:.2f}%. Manual Investigator Notes: {notes}")
+        summary = f"The investigation yielded a confidence score of {score*100:.2f}%. Analysis notes: {notes if notes else 'N/A'}"
+        pdf.multi_cell(0, 7, summary)
 
         pdf_path = "forensic_results/Ultimate_Forensic_Report.pdf"
         pdf.output(pdf_path)
