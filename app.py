@@ -137,7 +137,7 @@ if uploaded_file:
         pdf.image(grad_path, w=110)
         pdf.set_font("Arial", 'I', 9)
         pdf.multi_cell(0, 7, (
-    "Forensic Legend:\n"
+    "AI Heat MAP Legend:\n"
     "- RED: High-Level of  manipulation\n"
     "- YELLOW: Moderate-Level of manipulation\n"
     "- GREEN/CYAN: Neutral/Coherent Zones (Statistically Insignificant)\n"
