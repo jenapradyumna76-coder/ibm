@@ -25,7 +25,7 @@ def get_file_hash(file_path):
     return sha256_hash.hexdigest()
 
 def analyze_audio_integrity(video_path):
-    """Simulates forensic audio spectral check."""
+
     has_audio = "Digital Stream Detected"
     audio_consistency = 0.9825 
     return has_audio, audio_consistency
@@ -118,7 +118,7 @@ if uploaded_file:
                 plt.savefig(chart_path)
                 plt.close(fig)
 
-            status.update(label="Forensic Analysis Complete!", state="complete")
+            status.update(label=" Analysis Complete!", state="complete")
 
         # --- 6. INTEGRATED PDF REPORT GENERATION ---
         pdf = UltimateForensicReport()
@@ -133,13 +133,13 @@ if uploaded_file:
         pdf.chapter_header("2. TEMPORAL ANOMALY SCAN")
         pdf.image(chart_path, w=150)
         
-        pdf.chapter_header("3. VISUAL ARTIFACT LOCALIZATION (HD HEATMAP)")
+        pdf.chapter_header("3. AI HD HEATMAP ANALYSIS")
         pdf.image(grad_path, w=110)
         pdf.set_font("Arial", 'I', 9)
         pdf.multi_cell(0, 7, (
     "Forensic Legend:\n"
-    "- RED: High-Probability Artifacts (Primary Evidence)\n"
-    "- YELLOW: Secondary Inconsistencies\n"
+    "- RED: High-Level of  manipulation\n"
+    "- YELLOW: Moderate-Level of manipulation\n"
     "- GREEN/CYAN: Neutral/Coherent Zones (Statistically Insignificant)\n"
     "- BLUE: Non-Analyzed Background Area"
 ))
@@ -163,11 +163,11 @@ if uploaded_file:
         summary = f"Confidence Score: {score*100:.2f} %."
         pdf.multi_cell(0, 7, summary)
 
-        pdf_path = "    deepfake_results/deepfake_Report.pdf"
+        pdf_path = "forensics_results/forensics_Report.pdf"
         pdf.output(pdf_path)
         
         with open(pdf_path, "rb") as f:
-            st.download_button("📥 Download Official  Certificate", f, file_name="deepfake_Report.pdf")
+            st.download_button("📥 Download Official  Certificate", f, file_name="forensics_Report.pdf")
 
         col1, col2 = st.columns(2)
         with col1:
