@@ -138,7 +138,13 @@ if uploaded_file:
         pdf.chapter_header("3. VISUAL ARTIFACT LOCALIZATION (HD HEATMAP)")
         pdf.image(grad_path, w=110)
         pdf.set_font("Arial", 'I', 9)
-        pdf.multi_cell(0, 7, "Analysis: Bicubic interpolation applied to localized artifacts.")
+        pdf.multi_cell(0, 7, (
+    "Forensic Legend:\n"
+    "- RED: High-Probability Artifacts (Primary Evidence)\n"
+    "- YELLOW: Secondary Inconsistencies\n"
+    "- GREEN/CYAN: Neutral/Coherent Zones (Statistically Insignificant)\n"
+    "- BLUE: Non-Analyzed Background Area"
+))
 
         pdf.chapter_header("4. AUDIO SPECTRAL INTEGRITY")
         has_audio, a_score = analyze_audio_integrity(tfile.name)
