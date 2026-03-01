@@ -122,7 +122,6 @@ def apply_heatmap(frame, heatmap):
 # --- 4. APP INTERFACE ---
 st.title("🛡️ DEEPFAKE VIDEO AI SYSTEM")
 
-[Image of a deepfake detection system architecture showing the flow from video input to metadata check, AI analysis, Grad-CAM, and final PDF report]
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
 investigator = st.text_input("Investigator Name", placeholder="YOUR NAME")
