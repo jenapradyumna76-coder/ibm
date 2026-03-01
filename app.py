@@ -13,51 +13,63 @@ import matplotlib.pyplot as plt
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
+# --- 2. HIGH-VISIBILITY STATIC THEME (#101820) ---
 st.markdown("""
     <style>
-        /* 1. Global Background & Header Fix */
+        /* Global Reset: Kill all animations and transitions */
+        * {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+        }
+
+        /* Full Page Background & Header */
         .stApp { background-color: #101820 !important; }
         header, [data-testid="stHeader"], [data-testid="stToolbar"] {
             background-color: #101820 !important;
         }
 
-        /* 2. BUTTON ANIMATION KILL-SWITCH (Static Mode) */
-        /* Target all buttons including 'Browse files' and 'Perform Analysis' */
-        button, .stButton>button, [data-testid="stFileUploader"] button {
-            transition: none !important;
-            animation: none !important;
-            transform: none !important;
-            background-color: #00D1FF !important;
-            color: #101820 !important;
-            border-radius: 8px !important;
-            border: none !important;
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] { background-color: #0B0F14 !important; }
+
+        /* Text Colors: Neon Cyan for Headers, White for Body */
+        h1, h2, h3 { 
+            color: #00D1FF !important; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .stApp p, .stApp span, .stApp label { 
+            color: #FFFFFF !important; 
+            font-weight: 500 !important;
         }
 
-        /* Disable the 'Grow' or 'Pulse' effect on hover */
-        button:hover, .stButton>button:hover, [data-testid="stFileUploader"] button:hover {
-            transition: none !important;
-            transform: none !important;
-            background-color: #00D1FF !important; /* Keep color same as idle */
-            border: none !important;
-        }
-
-        /* Disable the 'Click' shrink effect */
-        button:active, .stButton>button:active {
-            transform: none !important;
-            transition: none !important;
-        }
-
-        /* 3. STATIC FILE UPLOADER BOX */
+        /* Static File Uploader */
         [data-testid="stFileUploader"] section {
             background-color: #1A222D !important;
             border: 2px dashed #00D1FF !important;
-            transition: none !important;
-            animation: none !important;
+            color: #FFFFFF !important;
         }
 
-        /* 4. TEXT COLORS */
-        h1, h2, h3 { color: #00D1FF !important; }
-        .stApp p, .stApp span, .stApp label { color: #FFFFFF !important; }
+        /* Static Buttons */
+        button, .stButton>button {
+            background-color: #00D1FF !important;
+            color: #101820 !important;
+            font-weight: bold !important;
+            border: none !important;
+        }
+
+        /* NEON GREEN STATIC STATUS (Analysis Complete) */
+        div[data-testid="stStatusWidget"]:has(svg[data-testid="stStatusWidgetSuccessIcon"]) {
+            border: 2px solid #39FF14 !important;
+            background-color: #0B140B !important;
+        }
+        div[data-testid="stStatusWidget"]:has(svg[data-testid="stStatusWidgetSuccessIcon"]) label {
+            color: #39FF14 !important;
+            font-weight: 900 !important;
+        }
+        div[data-testid="stStatusWidget"] svg[data-testid="stStatusWidgetSuccessIcon"] {
+            fill: #39FF14 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 # Ensure results directory exists
