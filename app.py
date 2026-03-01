@@ -16,14 +16,39 @@ st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", l
 # --- 2. DARK SLATE GREY THEME ---
 st.markdown("""
     <style>
+        /* Main background */
         .stApp {
-            background-color: #2F4F4F; 
+            background-color: #000080 !important; /* Navy Blue */
         }
+        
+        /* Sidebar background */
         [data-testid="stSidebar"] {
-            background-color: #1A3030;
+            background-color: #000033 !important;
         }
+
+        /* Force all text to white */
         .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
             color: white !important;
+        }
+
+        /* 🚨 SPECIFIC FIX FOR FILE UPLOADER VISIBILITY 🚨 */
+        [data-testid="stFileUploader"] section {
+            background-color: #000055 !important; /* Darker Blue background for the box */
+            border: 2px dashed #4169E1 !important; /* Royal Blue dashed border */
+            color: white !important;
+        }
+        
+        /* This ensures the "Drag and drop file here" text is bright white */
+        [data-testid="stFileUploader"] div div div div {
+            color: white !important;
+        }
+
+        /* Custom Button Styling */
+        .stButton>button {
+            background-color: #4169E1 !important;
+            color: white !important;
+            font-weight: bold;
+            border-radius: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
