@@ -13,41 +13,58 @@ import matplotlib.pyplot as plt
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
+# --- 2. HIGH-VISIBILITY THEME ---
 st.markdown("""
     <style>
-        /* Main background */
+        /* Main background - Deep Charcoal Blue */
         .stApp {
-            background-color: #000080 !important; /* Navy Blue */
+            background-color: #101820 !important; 
         }
         
-        /* Sidebar background */
+        /* Sidebar background - Darker shade for depth */
         [data-testid="stSidebar"] {
-            background-color: #000033 !important;
+            background-color: #0B0F14 !important;
         }
 
-        /* Force all text to white */
+        /* Force all text labels and headers to bright white */
         .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
-            color: white !important;
+            color: #FFFFFF !important;
+            font-weight: 500 !important;
         }
 
-        /* 🚨 SPECIFIC FIX FOR FILE UPLOADER VISIBILITY 🚨 */
+        /* 🚨 FIX FOR FILE UPLOADER VISIBILITY 🚨 */
         [data-testid="stFileUploader"] section {
-            background-color: #000055 !important; /* Darker Blue background for the box */
-            border: 2px dashed #4169E1 !important; /* Royal Blue dashed border */
-            color: white !important;
+            background-color: #1A222D !important; /* Slightly lighter than background */
+            border: 2px dashed #00D1FF !important; /* Neon Blue border for visibility */
+            color: #FFFFFF !important;
+            border-radius: 10px;
         }
         
-        /* This ensures the "Drag and drop file here" text is bright white */
+        /* Ensure the "Drag and drop" and limit text is visible */
         [data-testid="stFileUploader"] div div div div {
-            color: white !important;
+            color: #E0E0E0 !important;
         }
 
-        /* Custom Button Styling */
+        /* Fix Text Input background and text color */
+        .stTextInput>div>div>input {
+            background-color: #1A222D !important;
+            color: #FFFFFF !important;
+            border: 1px solid #00D1FF !important;
+        }
+
+        /* Custom Button - Teal/Cyan for high contrast action */
         .stButton>button {
-            background-color: #4169E1 !important;
+            background-color: #00D1FF !important;
+            color: #101820 !important;
+            font-weight: bold !important;
+            border-radius: 8px;
+            width: 100%;
+            border: none;
+        }
+        
+        .stButton>button:hover {
+            background-color: #00A3C4 !important;
             color: white !important;
-            font-weight: bold;
-            border-radius: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
