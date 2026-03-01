@@ -121,7 +121,6 @@ def apply_heatmap(frame, heatmap):
     superimposed = cv2.addWeighted(jet_heatmap, 0.5, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), 0.5, 0)
     return superimposed
 
-# --- 6. USER INTERFACE ---
 st.title("🛡️ DEEPFAKE VIDEO DETECTION AI SYSTEM")
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
