@@ -192,4 +192,3 @@ if uploaded_file:
             st.image(grad_path, caption="VisualHD Heatmap ANALYSIS ")
         with col2:
             st.image(chart_path, caption="Temporal Detection Probability")
-add the above code in this and give the exact code
