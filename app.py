@@ -13,65 +13,51 @@ import matplotlib.pyplot as plt
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
-# --- 2. STATIC HIGH-VISIBILITY THEME ---
 st.markdown("""
     <style>
-        /* Main background - Deep Charcoal */
+        /* 1. Main background */
         .stApp {
             background-color: #101820 !important; 
         }
         
-        /* Sidebar background */
+        /* 2. FIX FOR TOP WHITE PORTION (Header and Toolbar) */
+        header, [data-testid="stHeader"], [data-testid="stToolbar"] {
+            background-color: #101820 !important;
+            color: white !important;
+        }
+
+        /* 3. Sidebar background */
         [data-testid="stSidebar"] {
             background-color: #0B0F14 !important;
         }
 
-        /* Force all text to bright white */
+        /* 4. Remove the thin colored line at the very top */
+        [data-testid="stHeader"]::before {
+            background-image: none !important;
+            background-color: #101820 !important;
+        }
+
+        /* Force all text labels to bright white */
         .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
             color: #FFFFFF !important;
             font-weight: 500 !important;
         }
 
-        /* 🚨 STATIC FILE UPLOADER (No Animation) 🚨 */
+        /* STATIC FILE UPLOADER (No Animation) */
         [data-testid="stFileUploader"] section {
             background-color: #1A222D !important;
             border: 2px dashed #00D1FF !important;
             color: #FFFFFF !important;
             border-radius: 10px;
-            /* Disable all animations and transitions */
             transition: none !important;
             animation: none !important;
         }
         
-        /* Remove hover pulsing effects on the upload dropzone */
-        [data-testid="stFileUploader"] section:hover {
-            border: 2px dashed #00D1FF !important;
-            background-color: #1A222D !important;
-        }
-
-        /* Ensure "Browse files" button is static and visible */
+        /* Ensure the "Browse files" button is static */
         [data-testid="stFileUploader"] button {
             background-color: #00D1FF !important;
             color: #101820 !important;
             border: none !important;
-            transition: none !important;
-        }
-
-        /* Fix Text Input background */
-        .stTextInput>div>div>input {
-            background-color: #1A222D !important;
-            color: #FFFFFF !important;
-            border: 1px solid #00D1FF !important;
-        }
-
-        /* Action Button - Static Styling */
-        .stButton>button {
-            background-color: #00D1FF !important;
-            color: #101820 !important;
-            font-weight: bold !important;
-            border-radius: 8px;
-            width: 100%;
-            border: none;
             transition: none !important;
         }
     </style>
