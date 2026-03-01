@@ -9,16 +9,16 @@ from datetime import datetime
 import matplotlib.cm as cm
 import hashlib
 import matplotlib.pyplot as plt
-import gc  #
-from tensorflow.keras import backend as K #
+import gc
+from tensorflow.keras import backend as K
 
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
-# --- 2. THEME & UI STYLING (STATIC HIGH-VISIBILITY) ---
+# --- 2. HIGH-VISIBILITY STATIC THEME (#101820) ---
 st.markdown("""
     <style>
-        /* Global Reset: Disable all animations and transforms */
+        /* Global Reset: Kill all animations and transitions */
         * {
             transition: none !important;
             animation: none !important;
@@ -35,7 +35,7 @@ st.markdown("""
         /* Sidebar Styling */
         [data-testid="stSidebar"] { background-color: #0B0F14 !important; }
 
-        /* Text Colors */
+        /* Text Colors: Neon Cyan for Headers, White for Body */
         h1, h2, h3 { 
             color: #00D1FF !important; 
             text-transform: uppercase;
@@ -60,16 +60,17 @@ st.markdown("""
         }
 
         /* --- DARK GREEN STATIC BUTTONS --- */
-        button, .stButton>button, [data-testid="stFileUploader"] button {
+        button, .stButton>button, .stDownloadButton>button {
             background-color: #013220 !important; /* Dark Green */
             color: #FFFFFF !important;
             font-weight: bold !important;
             border: 1px solid #39FF14 !important; /* Neon Green Border */
             border-radius: 8px !important;
+            width: 100% !important;
         }
 
-        /* Maintain exact look on hover */
-        button:hover, .stButton>button:hover, [data-testid="stFileUploader"] button:hover {
+        /* Maintain exact look on hover (No animation) */
+        button:hover, .stButton>button:hover, .stDownloadButton>button:hover {
             background-color: #013220 !important;
             border: 1px solid #39FF14 !important;
         }
@@ -83,13 +84,16 @@ st.markdown("""
             color: #39FF14 !important;
             font-weight: 900 !important;
         }
+        div[data-testid="stStatusWidget"] svg[data-testid="stStatusWidgetSuccessIcon"] {
+            fill: #39FF14 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 if not os.path.exists("forensic_results"):
     os.makedirs("forensic_results") #
 
-# --- 3. CORE LOGIC ---
+# --- 3. UTILITIES & FORENSIC ENGINE ---
 def get_file_hash(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -121,8 +125,25 @@ def apply_heatmap(frame, heatmap):
     superimposed = cv2.addWeighted(jet_heatmap, 0.5, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), 0.5, 0)
     return superimposed #
 
+def generate_pdf(investigator, v_hash, score, grad_path, chart_path):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(200, 10, "FORENSIC DEEPFAKE ANALYSIS REPORT", ln=True, align='C')
+    pdf.set_font("Arial", size=12)
+    pdf.ln(10)
+    pdf.cell(200, 10, f"Investigator: {investigator}", ln=True)
+    pdf.cell(200, 10, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
+    pdf.cell(200, 10, f"Video SHA-256: {v_hash}", ln=True)
+    pdf.cell(200, 10, f"AI Confidence Score: {score*100:.2f}%", ln=True)
+    pdf.image(grad_path, x=10, y=70, w=90)
+    pdf.image(chart_path, x=110, y=70, w=90)
+    return pdf.output(dest='S') #
+
 # --- 4. APP INTERFACE ---
 st.title("🛡️ DEEPFAKE VIDEO AI SYSTEM")
+
+
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
 investigator = st.text_input("Investigator Name", placeholder="YOUR NAME")
@@ -136,28 +157,23 @@ if uploaded_file:
             model = load_forensic_engine() #
             
             with st.status("Performing Comprehensive Multi-Modal Scan...", expanded=True) as status:
-                v_hash = get_file_hash(tfile.name) #
-                
+                v_hash = get_file_hash(tfile.name)
                 cap = cv2.VideoCapture(tfile.name)
                 cap.set(cv2.CAP_PROP_POS_FRAMES, 10)
                 ret, frame = cap.read()
                 cap.release()
                 
                 if ret:
-                    # Memory-efficient resizing
                     img_small = cv2.resize(frame, (299, 299))
                     img_array = tf.keras.applications.xception.preprocess_input(np.expand_dims(img_small, axis=0))
-                    
                     preds = model.predict(img_array)
                     score = float(np.max(preds))
                     
-                    # Grad-CAM Heatmap
                     heatmap = make_gradcam_heatmap(img_array, model, "block14_sepconv2_act")
                     grad_img = apply_heatmap(frame, heatmap)
                     grad_path = "forensic_results/grad_evidence.jpg"
                     cv2.imwrite(grad_path, cv2.cvtColor(grad_img, cv2.COLOR_RGB2BGR))
                     
-                    # Chart for PDF
                     plt.style.use('default') 
                     fig, ax = plt.subplots(figsize=(6, 2.5))
                     ax.plot([score * (0.8 + np.random.uniform(0, 0.2)) for _ in range(10)], color='red')
@@ -167,17 +183,26 @@ if uploaded_file:
 
                 status.update(label="✅ ANALYSIS COMPLETE!", state="complete")
 
-            # Final Memory Cleanup
+            # Memory Cleanup
             K.clear_session()
             gc.collect()
 
+            # --- 5. RESULTS & DOWNLOAD ---
             st.divider()
             col1, col2 = st.columns(2)
             with col1:
                 st.image(grad_path, caption="Visual HD Heatmap Analysis")
             with col2:
                 st.image(chart_path, caption="Temporal Detection Probability")
-                
+            
+            pdf_bytes = generate_pdf(investigator, v_hash, score, grad_path, chart_path) #
+            st.download_button(
+                label="📥 DOWNLOAD FORENSIC REPORT",
+                data=pdf_bytes,
+                file_name=f"Forensic_Report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                mime="application/pdf"
+            )
+            
         except Exception as e:
             st.error(f"Resource Error: {e}")
             gc.collect() #
