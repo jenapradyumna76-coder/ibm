@@ -13,54 +13,51 @@ import matplotlib.pyplot as plt
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
-# --- 2. DARK SLATE GREY THEME ---
 st.markdown("""
     <style>
-        /* 1. Main background */
-        .stApp {
-            background-color: #101820 !important; 
-        }
-        
-        /* 2. FIX FOR TOP WHITE PORTION (Header and Toolbar) */
+        /* 1. Global Background & Header Fix */
+        .stApp { background-color: #101820 !important; }
         header, [data-testid="stHeader"], [data-testid="stToolbar"] {
             background-color: #101820 !important;
-            color: white !important;
         }
 
-        /* 3. Sidebar background */
-        [data-testid="stSidebar"] {
-            background-color: #0B0F14 !important;
+        /* 2. BUTTON ANIMATION KILL-SWITCH (Static Mode) */
+        /* Target all buttons including 'Browse files' and 'Perform Analysis' */
+        button, .stButton>button, [data-testid="stFileUploader"] button {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            background-color: #00D1FF !important;
+            color: #101820 !important;
+            border-radius: 8px !important;
+            border: none !important;
         }
 
-        /* 4. Remove the thin colored line at the very top */
-        [data-testid="stHeader"]::before {
-            background-image: none !important;
-            background-color: #101820 !important;
+        /* Disable the 'Grow' or 'Pulse' effect on hover */
+        button:hover, .stButton>button:hover, [data-testid="stFileUploader"] button:hover {
+            transition: none !important;
+            transform: none !important;
+            background-color: #00D1FF !important; /* Keep color same as idle */
+            border: none !important;
         }
 
-        /* Force all text labels to bright white */
-        .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
-            color: #FFFFFF !important;
-            font-weight: 500 !important;
+        /* Disable the 'Click' shrink effect */
+        button:active, .stButton>button:active {
+            transform: none !important;
+            transition: none !important;
         }
 
-        /* STATIC FILE UPLOADER (No Animation) */
+        /* 3. STATIC FILE UPLOADER BOX */
         [data-testid="stFileUploader"] section {
             background-color: #1A222D !important;
             border: 2px dashed #00D1FF !important;
-            color: #FFFFFF !important;
-            border-radius: 10px;
             transition: none !important;
             animation: none !important;
         }
-        
-        /* Ensure the "Browse files" button is static */
-        [data-testid="stFileUploader"] button {
-            background-color: #00D1FF !important;
-            color: #101820 !important;
-            border: none !important;
-            transition: none !important;
-        }
+
+        /* 4. TEXT COLORS */
+        h1, h2, h3 { color: #00D1FF !important; }
+        .stApp p, .stApp span, .stApp label { color: #FFFFFF !important; }
     </style>
 """, unsafe_allow_html=True)
 # Ensure results directory exists
