@@ -15,49 +15,60 @@ st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", l
 
 st.markdown("""
     <style>
-        /* 1. Main background */
+        /* 1. Full Page Background Fix */
         .stApp {
             background-color: #101820 !important; 
         }
-        
-        /* 2. FIX FOR TOP WHITE PORTION (Header and Toolbar) */
         header, [data-testid="stHeader"], [data-testid="stToolbar"] {
             background-color: #101820 !important;
-            color: white !important;
         }
 
-        /* 3. Sidebar background */
-        [data-testid="stSidebar"] {
-            background-color: #0B0F14 !important;
+        /* 2. HEADER TEXT COLOR (Neon Cyan) */
+        h1, h2, h3 {
+            color: #00D1FF !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* 4. Remove the thin colored line at the very top */
-        [data-testid="stHeader"]::before {
-            background-image: none !important;
-            background-color: #101820 !important;
-        }
-
-        /* Force all text labels to bright white */
-        .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
+        /* 3. BODY & LABEL TEXT COLOR (Bright White) */
+        .stApp p, .stApp span, .stApp label, .stApp div {
             color: #FFFFFF !important;
             font-weight: 500 !important;
         }
 
-        /* STATIC FILE UPLOADER (No Animation) */
+        /* 4. SIDEBAR TEXT COLOR */
+        [data-testid="stSidebar"] section div {
+            color: #00D1FF !important;
+        }
+
+        /* 5. INPUT WIDGET TEXT COLOR */
+        /* This ensures what you type into the Investigator Name box is visible */
+        input {
+            color: #00D1FF !important; 
+            font-weight: bold !important;
+        }
+
+        /* 6. STATIC FILE UPLOADER STYLING */
         [data-testid="stFileUploader"] section {
             background-color: #1A222D !important;
             border: 2px dashed #00D1FF !important;
-            color: #FFFFFF !important;
-            border-radius: 10px;
             transition: none !important;
             animation: none !important;
         }
         
-        /* Ensure the "Browse files" button is static */
-        [data-testid="stFileUploader"] button {
+        /* Force the 'Drag and drop' text to be white */
+        [data-testid="stFileUploader"] section div div {
+            color: white !important;
+        }
+
+        /* 7. BUTTON TEXT COLOR */
+        .stButton>button {
             background-color: #00D1FF !important;
-            color: #101820 !important;
-            border: none !important;
+            color: #101820 !important; /* Dark text on bright button for contrast */
+            font-weight: 900 !important;
+            border-radius: 8px;
+            border: none;
             transition: none !important;
         }
     </style>
