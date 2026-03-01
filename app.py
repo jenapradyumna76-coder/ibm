@@ -10,19 +10,18 @@ import matplotlib.cm as cm
 import hashlib
 import matplotlib.pyplot as plt
 
-# --- 1. PAGE CONFIGURATION ---
+
 st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", layout="wide")
 
 st.markdown("""
     <style>
-        /* 1. Global Background & Header Fix */
+        
         .stApp { background-color: #101820 !important; }
         header, [data-testid="stHeader"], [data-testid="stToolbar"] {
             background-color: #101820 !important;
         }
 
-        /* 2. BUTTON ANIMATION KILL-SWITCH (Static Mode) */
-        /* Target all buttons including 'Browse files' and 'Perform Analysis' */
+     
         button, .stButton>button, [data-testid="stFileUploader"] button {
             transition: none !important;
             animation: none !important;
@@ -33,21 +32,21 @@ st.markdown("""
             border: none !important;
         }
 
-        /* Disable the 'Grow' or 'Pulse' effect on hover */
+
         button:hover, .stButton>button:hover, [data-testid="stFileUploader"] button:hover {
             transition: none !important;
             transform: none !important;
-            background-color: #00D1FF !important; /* Keep color same as idle */
+            background-color: #00D1FF !important;
             border: none !important;
         }
 
-        /* Disable the 'Click' shrink effect */
+  
         button:active, .stButton>button:active {
             transform: none !important;
             transition: none !important;
         }
 
-        /* 3. STATIC FILE UPLOADER BOX */
+   
         [data-testid="stFileUploader"] section {
             background-color: #1A222D !important;
             border: 2px dashed #00D1FF !important;
@@ -55,16 +54,16 @@ st.markdown("""
             animation: none !important;
         }
 
-        /* 4. TEXT COLORS */
+   
         h1, h2, h3 { color: #00D1FF !important; }
         .stApp p, .stApp span, .stApp label { color: #FFFFFF !important; }
     </style>
 """, unsafe_allow_html=True)
-# Ensure results directory exists
+
 if not os.path.exists("forensic_results"):
     os.makedirs("forensic_results")
 
-# --- 3. CORE LOGIC FUNCTIONS ---
+
 def get_file_hash(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -77,7 +76,7 @@ def analyze_audio_integrity(video_path):
     audio_consistency = 0.9825 
     return has_audio, audio_consistency
 
-# --- 4. PDF CLASS DEFINITION ---
+
 class UltimateForensicReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 18)
@@ -97,7 +96,7 @@ class UltimateForensicReport(FPDF):
         self.cell(0, 8, f" SECTION: {title}", 0, 1, 'L', 1)
         self.ln(3)
 
-# --- 5. AI ENGINE & HEATMAPS ---
+
 @st.cache_resource
 def load_forensic_engine():
     return tf.keras.applications.Xception(weights='imagenet')
@@ -123,7 +122,7 @@ def apply_heatmap(frame, heatmap):
     return superimposed
 
 # --- 6. USER INTERFACE ---
-st.title("🛡️ DEEPFAKE VIDEO AI SYSTEM")
+st.title("🛡️ DEEPFAKE VIDEO DETECTION AI SYSTEM")
 
 uploaded_file = st.file_uploader("📂 Input Evidence File", type=["mp4", "mov", "avi"])
 investigator = st.text_input("Investigator Name", placeholder="YOUR NAME")
@@ -144,27 +143,25 @@ if uploaded_file:
             cap.release()
             
             if ret:
-                # AI Prediction
+            
                 img_array = tf.keras.applications.xception.preprocess_input(np.expand_dims(cv2.resize(frame, (299, 299)), axis=0))
                 preds = model.predict(img_array)
                 score = float(np.max(preds))
                 
-                # Grad-CAM Evidence
+           
                 heatmap = make_gradcam_heatmap(img_array, model, "block14_sepconv2_act")
                 grad_img = apply_heatmap(frame, heatmap)
                 grad_path = "forensic_results/grad_evidence.jpg"
                 cv2.imwrite(grad_path, cv2.cvtColor(grad_img, cv2.COLOR_RGB2BGR))
                 
-                # REINFORCED CHART LOGIC:
-                # Use default style so text is black for the white PDF page
+        
                 plt.style.use('default') 
                 fig, ax = plt.subplots(figsize=(6, 2.5))
                 fake_prob = [score * (0.85 + np.random.uniform(0, 0.15)) for _ in range(10)]
                 ax.plot(fake_prob, marker='o', color='red', linewidth=1.5)
                 ax.set_title("Temporal Anomaly Scan (Probability over Time)")
                 ax.set_ylabel("Suspect Score")
-                
-                # Ensure directory exists right before saving
+          
                 if not os.path.exists("forensic_results"):
                     os.makedirs("forensic_results")
                 
@@ -174,7 +171,7 @@ if uploaded_file:
 
             status.update(label=" Analysis Complete!", state="complete")
 
-        # --- 7. REPORT GENERATION ---
+
         pdf = UltimateForensicReport()
         pdf.add_page()
         
@@ -221,11 +218,10 @@ if uploaded_file:
         summary = f"Confidence Score: {score*100:.2f}%."
         pdf.multi_cell(0, 7, summary)
 
-        # FINAL SAVE
         pdf_path = "forensic_results/Forensic_Report.pdf"
         pdf.output(pdf_path)
         
-        # --- 8. UI RESULTS ---
+
         st.divider()
         with open(pdf_path, "rb") as f:
             st.download_button("📥 Download Official Certificate", f, file_name=f"Forensic_Report_{v_hash[:8]}.pdf")
