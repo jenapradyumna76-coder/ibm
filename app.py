@@ -16,43 +16,53 @@ st.set_page_config(page_title="DEEPFAKE VIDEO AI SYSTEM", page_icon="🛡️", l
 # --- 2. DARK SLATE GREY THEME ---
 st.markdown("""
     <style>
-        /* Main background */
+        /* 1. Main background */
         .stApp {
-            background-color: #000080 !important; /* Navy Blue */
+            background-color: #101820 !important; 
         }
         
-        /* Sidebar background */
+        /* 2. FIX FOR TOP WHITE PORTION (Header and Toolbar) */
+        header, [data-testid="stHeader"], [data-testid="stToolbar"] {
+            background-color: #101820 !important;
+            color: white !important;
+        }
+
+        /* 3. Sidebar background */
         [data-testid="stSidebar"] {
-            background-color: #000033 !important;
+            background-color: #0B0F14 !important;
         }
 
-        /* Force all text to white */
+        /* 4. Remove the thin colored line at the very top */
+        [data-testid="stHeader"]::before {
+            background-image: none !important;
+            background-color: #101820 !important;
+        }
+
+        /* Force all text labels to bright white */
         .stApp, [data-testid="stSidebar"] h1, h2, h3, p, span, label {
-            color: white !important;
+            color: #FFFFFF !important;
+            font-weight: 500 !important;
         }
 
-        /* 🚨 SPECIFIC FIX FOR FILE UPLOADER VISIBILITY 🚨 */
+        /* STATIC FILE UPLOADER (No Animation) */
         [data-testid="stFileUploader"] section {
-            background-color: #000055 !important; /* Darker Blue background for the box */
-            border: 2px dashed #4169E1 !important; /* Royal Blue dashed border */
-            color: white !important;
+            background-color: #1A222D !important;
+            border: 2px dashed #00D1FF !important;
+            color: #FFFFFF !important;
+            border-radius: 10px;
+            transition: none !important;
+            animation: none !important;
         }
         
-        /* This ensures the "Drag and drop file here" text is bright white */
-        [data-testid="stFileUploader"] div div div div {
-            color: white !important;
-        }
-
-        /* Custom Button Styling */
-        .stButton>button {
-            background-color: #4169E1 !important;
-            color: white !important;
-            font-weight: bold;
-            border-radius: 10px;
+        /* Ensure the "Browse files" button is static */
+        [data-testid="stFileUploader"] button {
+            background-color: #00D1FF !important;
+            color: #101820 !important;
+            border: none !important;
+            transition: none !important;
         }
     </style>
 """, unsafe_allow_html=True)
-
 # Ensure results directory exists
 if not os.path.exists("forensic_results"):
     os.makedirs("forensic_results")
