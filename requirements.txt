@@ -1,8 +1,6 @@
 streamlit
-tensorflow-cpu
 opencv-python-headless
-fpdf2
+tensorflow
 numpy
+fpdf
 matplotlib
-pillow
-ffmpeg-python
